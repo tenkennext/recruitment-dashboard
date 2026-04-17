@@ -10,11 +10,26 @@ View your app in AI Studio: https://ai.studio/apps/dff9a043-e32e-4c48-8ac7-f5242
 
 ## Run Locally
 
-**Prerequisites:**  Node.js
-
+**Prerequisites:** Node.js
 
 1. Install dependencies:
    `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
+2. Start the backend server:
+   `npm run dev:server`
+3. Start the frontend client:
+   `npm run dev:client`
+
+Also available as a combined command:
+
    `npm run dev`
+
+### Arquitectura cliente-servidor
+
+Este proyecto ahora tiene una API backend en `server/index.ts` que expone los endpoints:
+
+- `GET /api/status`
+- `GET /api/job-requirements`
+- `GET /api/candidates`
+- `GET /api/candidates/:id`
+
+El frontend React en `src/App.tsx` consume esos endpoints a través de `src/api.ts`, respetando la separación de responsabilidades entre cliente, API y servidor.
