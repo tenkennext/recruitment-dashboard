@@ -16,11 +16,13 @@ import {
   ArrowUpRight,
   ShieldCheck,
   UserX,
-  FileQuestion
+  FileQuestion,
+  Upload
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Candidate, JobRequirement, Verdict } from './types';
 import { getCandidates, getJobRequirements } from './api';
+import CVUpload from './CVUpload';
 
 const VerdictBadge = ({ verdict }: { verdict: Verdict }) => {
   const styles = {
@@ -55,7 +57,7 @@ const ScoreCircle = ({ score }: { score: number }) => {
 };
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<'overview' | 'candidates' | 'ranking'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'upload' | 'candidates' | 'ranking'>('overview');
   const [searchTerm, setSearchTerm] = useState('');
   const [filterVerdict, setFilterVerdict] = useState<Verdict | 'All'>('All');
   const [candidates, setCandidates] = useState<Candidate[]>([]);
@@ -116,16 +118,17 @@ export default function App() {
               </div>
             </div>
             <nav className="hidden md:flex space-x-8">
-              {(['overview', 'candidates', 'ranking'] as const).map((tab) => (
+              {(['overview', 'upload', 'candidates', 'ranking'] as const).map((tab) => (
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
-                  className={`px-1 py-4 text-sm font-medium border-b-2 transition-colors ${
+                  className={`px-1 py-4 text-sm font-medium border-b-2 transition-colors flex items-center gap-2 ${
                     activeTab === tab
                       ? 'border-blue-600 text-blue-600'
                       : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'
                   }`}
                 >
+                  {tab === 'upload' && <Upload className="w-4 h-4" />}
                   {tab.charAt(0).toUpperCase() + tab.slice(1)}
                 </button>
               ))}
@@ -369,6 +372,23 @@ export default function App() {
                   </button>
                 </div>
               )}
+            </motion.div>
+          )}
+
+          {activeTab === 'upload' && (
+            <motion.div
+              key="upload"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="space-y-6"
+            >
+              <CVUpload 
+                onFilesProcessed={() => {
+                  // Recargar candidatos después de procesar archivos
+                  loadCandidates();
+                }}
+              />
             </motion.div>
           )}
 
